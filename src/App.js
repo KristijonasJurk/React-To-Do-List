@@ -16,6 +16,7 @@ function App() {
     } else if (name && isEditing) {
       // edit
     } else {
+      showAlert(true, 'item added', 'success')
       let newItem = { id: new Date().getTime().toString(), title: name };
       setList([...list, newItem])
       setName('')
@@ -24,12 +25,20 @@ function App() {
   const showAlert = (show = false, msg = '', type = '') => {
     setAlert({ show, msg, type })
   }
+  const clearItems = () => {
+    showAlert(true, 'list is empty', 'danger')
+    setList([])
+  }
+  const removeItem = (id) => {
+    showAlert(true, 'item removed', 'danger')
+    setList(list.filter((item) => item.id !== id))
+  }
 
   return <section
     className='section-center'>
     <form
       className='grocery-form'>
-      {alert.show && <Alert {...alert} showAlert={showAlert} />}
+      {alert.show && <Alert {...alert} list={list} showAlert={showAlert} />}
       <h3>groceries</h3>
       <div
         className="form-control">
@@ -48,8 +57,8 @@ function App() {
     </form>
     {list.length > 0 && (
       <div className="grocery-container">
-        <List items={list} />
-        <button className='clear-btn'>
+        <List items={list} removeItem={removeItem} />
+        <button className='clear-btn' onClick={clearItems}>
           clear items
       </button>
       </div>
